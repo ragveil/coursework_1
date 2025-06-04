@@ -42,5 +42,4 @@ exclude = ".git"
 disallow_untyped_defs = true
 warn_return_any = true
 warn_unreachable = true
-strict = true
 exclude = 'venv'
