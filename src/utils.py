@@ -1,6 +1,7 @@
 import os
 import re
 from datetime import datetime, timedelta
+from itertools import islice
 from typing import Any
 
 import pandas as pd
@@ -55,5 +56,38 @@ def get_period(date: str, period: str = "M") -> Any:
     return df
 
 
+def get_expenses(data_frame: pd.DataFrame) -> dict:
+    logger.info("Начало работы функции по подсчету расходов за выбранный период")
+    expenses_df = data_frame[data_frame["amount"] < 0]
+    expenses_general = {}
+    expenses_cash = {}
+    list_of_categories = ["Переводы", "Наличные", "Другое", "Различные товары"]
+    amount_df = expenses_df.groupby("category")["amount"].sum().sort_values(ascending=True)
+    logger.info("Сводная таблица расходов успешно сформирована")
+    for item, value in zip(amount_df.index, amount_df.values):
+        if item not in list_of_categories:
+            expenses_general[item] = int(value)
+        elif item in ("Переводы", "Наличные"):
+            expenses_cash[item] = int(value)
+        else:
+            pass
+    expenses_new = dict(islice(expenses_general.items(), 5))
+    other_expenses = 0
+    list_1 = [*expenses_new.keys(), *expenses_cash.keys()]
+    for item, value in zip(amount_df.index, amount_df.values):
+        if str(item) not in list_1:
+            other_expenses += int(value)
+    expenses_new["Другое"] = other_expenses
+    expenses = {
+        "total_amount": int(amount_df.iloc[:].sum()),
+        "main": [expenses_new],
+        "transfers_and_cash": [expenses_cash],
+    }
+    logger.info("Успешное выполнение функции и формирование корректного JSON-ответа")
+    return expenses
+
+
 
 df_formed = form_data_frame()
+df_got_date = get_period("12.03.2020", "asd")
+print(get_expenses(df_got_date))
