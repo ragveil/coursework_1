@@ -30,6 +30,20 @@ def search_item(transactions: list[dict], item: str) -> list[dict]|str:
     return json.dumps(result, ensure_ascii=False)
 
 
+def search_telephone_numbers(transactions: list[dict]) -> list[dict]|str:
+    result = []
+    logger.info('Начало работы функции поиска по номерам телефонов.')
+    for transaction in transactions:
+        if re.search(r'[+7]\s\d{3}\s\d{3}-\d{2}-\d{2}', transaction['Описание']) is not None:
+            result.append(transaction)
+    if len(result) == 0:
+        logger.info('Совпадений не найдено')
+        return 'Телефонных номеров не найдено'
+    logger.info('Успешное завершение функции')
+    return json.dumps(result, ensure_ascii=False)
+
+
 list_of_transactions = get_transactions(path)
 
 # print(search_item(list_of_transactions, 'инвест'))
+# print(search_telephone_numbers(list_of_transactions))
