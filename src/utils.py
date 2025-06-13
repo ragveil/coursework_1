@@ -7,6 +7,7 @@ from typing import Any
 
 import pandas as pd
 import requests
+import yfinance as yf
 from dotenv import load_dotenv
 
 from config import ROOT_DIR
@@ -129,7 +130,21 @@ def get_currency_rates() -> list|str:
     return currency_rates
 
 
+def get_stock_rates() -> list:
+    logger.info("Начало работы функции по получению данных о котировках акций")
+    with open(settings, "r", encoding="utf-8") as file:
+        ticker_list = json.load(file)["user_stocks"]
+    stock = []
+    for ticker in ticker_list:
+        temp = {"stock": ticker, "price": yf.Ticker(ticker).info["currentPrice"]}
+        stock.append(temp)
+        logger.info("Успешное получение данных о котировках акций и формирование корректного JSON-ответа")
+    return stock
+
+
 df_formed = form_data_frame()
 df_got_date = get_period("12.03.2020", "asd")
 get_expenses(df_got_date)
 get_income(df_got_date)
+# get_currency_rates()
+# get_stock_rates()
