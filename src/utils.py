@@ -87,7 +87,20 @@ def get_expenses(data_frame: pd.DataFrame) -> dict:
     return expenses
 
 
+def get_income(data_frame: pd.DataFrame) -> dict:
+    logger.info("Начало работы функции по подсчету доходов за выбранный период")
+    income_df = data_frame[data_frame["amount"] > 0]
+    income_general = {}
+    amount_df = income_df.groupby("category")["amount"].sum().sort_values(ascending=False)
+    logger.info("Сводная таблица доходов успешно сформирована")
+    for item, value in zip(amount_df.index, amount_df.values):
+        income_general[item] = int(value)
+    income = {"total_amount": int(amount_df.iloc[:].sum()), "main": [income_general]}
+    logger.info("Успешное выполнение функции и формирование корректного JSON-ответа")
+    return income
+
 
 df_formed = form_data_frame()
 df_got_date = get_period("12.03.2020", "asd")
-print(get_expenses(df_got_date))
+get_expenses(df_got_date)
+get_income(df_got_date)
