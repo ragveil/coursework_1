@@ -1,3 +1,4 @@
+import json
 import os
 import re
 from datetime import datetime, timedelta
@@ -5,13 +6,19 @@ from itertools import islice
 from typing import Any
 
 import pandas as pd
+import requests
+from dotenv import load_dotenv
 
 from config import ROOT_DIR
 from src.logger import get_logger
 
 logger = get_logger(__name__)
 
+load_dotenv()
+api_token = os.getenv("API_TOKEN")
+api_url = os.getenv("API_URL")
 
+settings = os.path.join(ROOT_DIR, "user_settings.json")
 path = os.path.join(ROOT_DIR, "data", "operations.xlsx")
 
 
@@ -98,6 +105,28 @@ def get_income(data_frame: pd.DataFrame) -> dict:
     income = {"total_amount": int(amount_df.iloc[:].sum()), "main": [income_general]}
     logger.info("Успешное выполнение функции и формирование корректного JSON-ответа")
     return income
+
+
+def get_currency_rates() -> list|str:
+    logger.info("Начало работы функции по получению курсов валют")
+    with open(settings, "r", encoding="utf-8") as file:
+        currency_list = json.load(file)["user_currencies"]
+        currency_rates = []
+    for currency in currency_list:
+        params = {"amount": 1, "to": "RUB", "from": currency}
+        headers = {"apikey": api_token}
+        try:
+            response: Any = requests.get(api_url, headers=headers, params=params, timeout=50)
+            status = response.raise_for_status()
+            logger.info(f"Попытка соединения с сервером, {status}")
+        except requests.exceptions.RequestException as e:
+            logger.error(f"Ошибка обращения к api {e}")
+            return "Ошибка обращения к api"
+        else:
+            temp = {"currency": currency, "rate": round(response.json().get("info").get("rate"), 2)}
+            currency_rates.append(temp)
+            logger.info("Успешное получение данных о курсе валют и формирование корректного JSON-ответа")
+    return currency_rates
 
 
 df_formed = form_data_frame()
