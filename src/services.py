@@ -43,7 +43,21 @@ def search_telephone_numbers(transactions: list[dict]) -> list[dict]|str:
     return json.dumps(result, ensure_ascii=False)
 
 
+def search_personal_transactions(transactions: list[dict]) -> list[dict]|str:
+    result = []
+    logger.info('Начало работы функции поиска по именам.')
+    for transaction in transactions:
+        if transaction['Категория'] == 'Переводы' and re.search(r'\w{3,}\s\w\.$', transaction['Описание']) is not None:
+            result.append(transaction)
+    if len(result) == 0:
+        logger.info('Совпадений не найдено')
+        return 'Переводов физическим лицам не найдено'
+    logger.info('Успешное завершение функции')
+    return json.dumps(result, ensure_ascii=False)
+
+
 list_of_transactions = get_transactions(path)
 
 # print(search_item(list_of_transactions, 'инвест'))
 # print(search_telephone_numbers(list_of_transactions))
+# print(search_personal_transactions(list_of_transactions))
