@@ -1,33 +1,16 @@
-#     Основные функции для генерации JSON ответов
-#
-#     главная функция принимает строку с датой и необязательный параметр - диапазон данных. по умолчанию диапазон - 1 месяц.
-#     возможные значения параметра:
-# W — неделя, на которую приходится дата;
-# M — месяц, на который приходится дата;
-# Y — год, на который приходится дата;
-# ALL — все данные до указанной даты.
+import json
 
-# JSON-ответ содержит:
-# 1) «Расходы»:
-# Общая сумма расходов.
-# Раздел «Основные», в котором траты по категориям отсортированы по убыванию. Данные предоставляются по 7 категориям с наибольшими тратами, траты по остальным категориям суммируются и попадают в категорию «Остальное».
-# Раздел «Переводы и наличные», в котором сумма по категориям «Наличные» и «Переводы» отсортирована по убыванию.
-# 2) «Поступления»:
-# Общая сумма поступлений.
-# Раздел «Основные», в котором поступления по категориям отсортированы по убыванию.
-# 3) Курс валют.
-# 4) Стоимость акций из S&P 500.
+from src.utils import form_data_frame, get_currency_rates, get_expenses, get_income, get_period, get_stock_rates
 
-#Цифры по тратам и поступлениям округлите до целых.
 
-# Пример ответа:
-# {"expenses": {"total_amount": 32101, "main": [{"category": "Супермаркеты", "amount": 17319}, {"category": "Фастфуд", "amount": 3324}, {"category": "Топливо", "amount": 2289},
-#       {"category": "Развлечения", "amount": 1850}, {"category": "Медицина", "amount": 1350}, {"category": "Остальное", "amount": 2954}],
-#     "transfers_and_cash": [{"category": "Наличные", "amount": 500}, {"category": "Переводы", "amount": 200}]},
-#   "income": {"total_amount": 54271, "main": [{"category": "Пополнение_BANK007", "amount": 33000},
-#                                              {"category": "Проценты_на_остаток", "amount": 1242}, {"category": "Кэшбэк", "amount": 29}]},
-#   "currency_rates": [{"currency": "USD","rate": 73.21},{"currency": "EUR", "rate": 87.08}],
-#   "stock_prices": [{"stock": "AAPL", "price": 150.12}, {"stock": "AMZN", "price": 3173.18}, {"stock": "GOOGL", "price": 2742.39},
-#                    {"stock": "MSFT", "price": 296.71}, {"stock": "TSLA", "price": 1007.08}]}
+def get_events_json(date: str, period: str ='M'):
+    form_data_frame()
+    df = get_period(date, period)
+    expenses = get_expenses(df)
+    income = get_income(df)
+    currency_rates = get_currency_rates()
+    stock_rates = get_stock_rates()
+    result = {'expenses': expenses, 'income': income, 'currency_rates': currency_rates, 'stock_rates': stock_rates}
+    return json.dumps(result, ensure_ascii=False)
 
-#функция принимает на вход DataFrame и отдает корректный JSON ответ
+print(get_events_json('01.03.2020', 'w'))
