@@ -56,6 +56,29 @@ def spending_by_weekday(transactions: pd.DataFrame,
     return result
 
 
+# Функция выводит средние траты в рабочий и в выходной день за последние три месяца (от переданной даты).
+def spending_by_workday(transactions: pd.DataFrame,
+                        date: Optional[str] = None):
+    if date:
+        end_date = datetime.strptime(date, "%d.%m.%Y").date()
+    else:
+        end_date = datetime.today().date()
+    period = timedelta(days=90)
+    start_date = end_date - period
+    mask = (transactions["Дата платежа"] >= start_date) & (transactions["Дата платежа"] <= end_date)
+    df = transactions.loc[mask]
+
+    df.loc[:, 'Дата платежа'] = df.loc[:, 'Дата платежа'].apply(lambda x: x.weekday())
+    workdays_mask = (df['Дата платежа'] <= 4)
+    workdays = df.loc[workdays_mask]
+    weekends_mask = (df['Дата платежа'] >= 5)
+    weekends = df.loc[weekends_mask]
+    workdays = workdays['Сумма платежа'].mean()
+    weekends = weekends['Сумма платежа'].mean()
+    result = {f'Средние траты за период с {start_date.strftime('%d.%m.%Y')} по {end_date.strftime('%d.%m.%Y')}': {'Траты в рабочие дни': int(workdays), 'Траты в выходные дни': int(weekends)}}
+    return result
+
 data_frame = get_dataframe()
 print(spending_by_category(data_frame, 'Супермаркеты', '08.05.2019'))
 print(spending_by_weekday(data_frame, '01.03.2020'))
+print(spending_by_workday(data_frame, '01.03.2020'))
