@@ -23,7 +23,7 @@ settings = os.path.join(ROOT_DIR, "user_settings.json")
 path = os.path.join(ROOT_DIR, "data", "operations.xlsx")
 
 
-def form_data_frame() -> Any:
+def form_data_frame(path_to_file) -> pd.DataFrame|Any:
     df_columns: list | int = [
         "Дата платежа",
         "Статус",
@@ -31,7 +31,7 @@ def form_data_frame() -> Any:
         "Валюта платежа",
         "Категория",
     ]
-    df = pd.read_excel(str(path), usecols=df_columns, engine="openpyxl")
+    df: pd.DataFrame = pd.read_excel(str(path_to_file), usecols=df_columns, engine="openpyxl")
     logger.info("Успешная загрузка данных")
     df.columns = ["date", "status", "amount", "currency", "category"]
     df["date"] = pd.to_datetime(df["date"], dayfirst=True).dt.date
@@ -39,6 +39,7 @@ def form_data_frame() -> Any:
     df = df.drop(columns=['status', 'currency'])
     logger.info("DataFrame сформирован")
     return df
+
 
 def get_period(date: str, period: str = "M") -> Any:
     end_date = datetime.strptime(date, "%d.%m.%Y").date()
@@ -56,12 +57,16 @@ def get_period(date: str, period: str = "M") -> Any:
             start_date_replace = re.sub(r"^\d\d.\d\d", "01.01", date)
             start_date = datetime.strptime(start_date_replace, "%d.%m.%Y").date()
             logger.info(f"Сформирован период - Год(Y): {start_date} : {end_date}")
+        case 'D':
+            start_date = end_date
+            logger.info(f"Сформирован период - День(D): {start_date}")
         case _:
             logger.info(f"Сформирован период - За всё время: {df_formed['date'].iloc[-1]} : {end_date}")
             return df_formed
     mask = (df_formed["date"] >= start_date) & (df_formed["date"] <= end_date)
     df = df_formed.loc[mask]
     return df
+
 
 
 def get_expenses(data_frame: pd.DataFrame) -> dict:
@@ -142,10 +147,11 @@ def get_stock_rates() -> list:
     return stock
 
 
-df_formed = form_data_frame()
+df_formed = form_data_frame(path)
 df_got_date = get_period("12.03.2020", "asd")
 get_expenses(df_got_date)
 get_income(df_got_date)
-# get_currency_rates()
+print(get_currency_rates())
 # get_stock_rates()
-
+# period = get_period("31.12.2021", "D")
+# print(period.head(1))
