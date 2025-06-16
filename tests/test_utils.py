@@ -9,7 +9,7 @@ from pandas.testing import assert_frame_equal
 from pytest_mock import MockFixture
 
 from config import ROOT_DIR
-from src.utils import form_data_frame, get_currency_rates, get_expenses, get_income, get_period, get_stock_rates
+from src.utils import form_data_frame, get_currency_rates, get_expenses, get_income, get_period
 
 path_to_data = os.path.join(ROOT_DIR, "data")
 path_to_test_df_tiny = os.path.join(path_to_data, "test_operations_2.xlsx")
@@ -48,17 +48,27 @@ def test_get_income_correct():
     df = form_data_frame(path_to_test_df)
     assert get_income(df) == {'main': [{'Пополнения': 179046}], 'total_amount': 179046}
 
-def test_get_currency_rates_correct():
-    pass
+def test_get_currency_rates_correct(mocker: MockFixture, mock_currency_response) -> None:
+    mock_response = mocker.patch("requests.get")
+    mock_response.return_value.json.return_value = {
+        "success": True,
+        "query": {"from": "USD", "to": "RUB", "amount": 8221.37},
+        "info": {"timestamp": 1747777395, "rate": 80.624798},
+        "date": "2025-05-20",
+        "result": 662846.295533,
+    }
+    assert get_currency_rates() == mock_currency_response
+    mock_response.assert_called()
 
 
 def test_get_currency_rates_error(mocker: MockFixture):
-    mock_response = mocker.patch("requests.get", side_effect=requests.exceptions.ConnectionError)
+    mock_response = mocker.patch("src.utils.requests.get", side_effect=requests.exceptions.ConnectionError)
     assert get_currency_rates() == "Ошибка обращения к api"
     mock_response.assert_called_once()
 
-def test_get_stock_rates_correct():
-    pass
-
-def test_get_stock_rates_error():
-    pass
+def test_get_stock_rates(monkeypatch, mock_stock_response):
+    def mock_get_stock_rates():
+        return mock_stock_response
+    monkeypatch.setattr('src.utils.get_stock_rates', mock_get_stock_rates)
+    from src.utils import get_stock_rates
+    assert get_stock_rates() == mock_stock_response

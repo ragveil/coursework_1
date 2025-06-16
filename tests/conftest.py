@@ -93,4 +93,38 @@ def df_2():
 
 @pytest.fixture
 def mock_currency_response():
-    return [{'currency': 'USD', 'rate': 78.75}, {'currency': 'EUR', 'rate': 91.05}]
+    return [{'currency': 'USD', 'rate': 80.62}, {'currency': 'EUR', 'rate': 80.62}]
+
+@pytest.fixture
+def mock_stock_response():
+ return [{'stock': 'AAPL', 'price': 196.45}, {'stock': 'AMZN', 'price': 212.1}, {'stock': 'GOOGL', 'price': 174.67}, {'stock': 'MSFT', 'price': 474.96}, {'stock': 'TSLA', 'price': 325.31}]
+
+@pytest.fixture
+def spending_by_category_correct():
+ return [{'Дата платежа': '31.12.2021',
+  'Категория': 'Супермаркеты',
+  'Сумма платежа': -160.89},
+ {'Дата платежа': '31.12.2021',
+  'Категория': 'Супермаркеты',
+  'Сумма платежа': -64.0},
+ {'Дата платежа': '31.12.2021',
+  'Категория': 'Супермаркеты',
+  'Сумма платежа': -118.12},
+ {'Дата платежа': '31.12.2021',
+  'Категория': 'Супермаркеты',
+  'Сумма платежа': -78.05}]
+
+@pytest.fixture
+def spending_by_weekday_correct():
+ return {'Средние траты по дням недели за период с 02.10.2021 по 31.12.2021': {'Воскресенье': -133,
+                                                                       'Вторник': -123,
+                                                                       'Понедельник': -183,
+                                                                       'Пятница': -165,
+                                                                       'Среда': -4293,
+                                                                       'Суббота': -160,
+                                                                       'Четверг': -335}}
+
+@pytest.fixture
+def spending_by_workday_correct():
+ return {'Средние траты за период с 02.10.2021 по 31.12.2021': {'Траты в выходные дни': -147,
+                                                        'Траты в рабочие дни': -1046}}
