@@ -36,9 +36,9 @@ def save_to_file(filename: Literal[False] | str = False) -> Callable[[Any], Any]
     return decorator
 
 
-def get_dataframe() -> pd.DataFrame:
+def get_dataframe(path) -> pd.DataFrame:
     columns = ['Дата операции','Дата платежа','Статус','Сумма платежа','Валюта платежа','Категория']
-    df = pd.read_excel(str(xlsx_path), usecols=columns, engine="openpyxl")
+    df = pd.read_excel(str(path), usecols=columns, engine="openpyxl")
     logger.info('Загрузка данных из XLSX-файла')
     df["Дата операции"] = pd.to_datetime(df["Дата операции"], dayfirst=True)
     df["Дата платежа"] = pd.to_datetime(df["Дата платежа"], dayfirst=True)
@@ -124,7 +124,7 @@ def spending_by_workday(transactions: pd.DataFrame,
     logger.info('Список средних значений трат по выходным и будним дням успешно сформирован.')
     return result
 
-data_frame = get_dataframe()
-print(spending_by_category(data_frame, 'Супермаркеты', '08.05.2019'))
-print(spending_by_weekday(data_frame, '01.03.2020'))
-print(spending_by_workday(data_frame, '01.03.2020'))
+data_frame = get_dataframe(xlsx_path)
+# print(spending_by_category(data_frame, 'Супермаркеты', '08.05.2019'))
+# print(spending_by_weekday(data_frame, '01.03.2020'))
+# print(spending_by_workday(data_frame, '01.03.2020'))
