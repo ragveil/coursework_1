@@ -1,11 +1,9 @@
 import logging
-import os
 
-from config import ROOT_DIR
+from src.constants import LOGS_DEFAULT
 
-
-logs_path = os.path.join(ROOT_DIR, "logs", "general.log")
-logging_format = f"%(asctime)s - %(name)s - %(levelname)s - (%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
+logs_path = LOGS_DEFAULT
+logging_format = "%(asctime)s - %(name)s - %(levelname)s - (%(filename)s).%(funcName)s(%(lineno)d) - %(message)s"
 
 
 def get_file_handler() -> logging.FileHandler:

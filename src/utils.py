@@ -10,7 +10,7 @@ import requests
 import yfinance as yf
 from dotenv import load_dotenv
 
-from config import ROOT_DIR
+from src.constants import PATH_TO_OPERATIONS_XLSX, USER_SETTINGS_JSON
 from src.logger import get_logger
 
 logger = get_logger(__name__)
@@ -19,33 +19,44 @@ load_dotenv()
 api_token = os.getenv("API_TOKEN")
 api_url = os.getenv("API_URL")
 
-settings = os.path.join(ROOT_DIR, "user_settings.json")
-path = os.path.join(ROOT_DIR, "data", "operations.xlsx")
+settings = USER_SETTINGS_JSON
+path = PATH_TO_OPERATIONS_XLSX
 
 
-def form_data_frame(path_to_file) -> pd.DataFrame|Any:
-    df_columns: list | int = [
-        "Дата платежа",
+def form_data_frame(path_to_file: str) -> pd.DataFrame:
+    """
+    Читает XLSX-файл и на его основе формирует dataframe.
+    :param path_to_file: Входящее значение - путь к файлу, строка.
+    :return: Результат работы функции, dataframe.
+    """
+    df_columns = [
+        "Дата операции",
         "Статус",
         "Сумма платежа",
         "Валюта платежа",
         "Категория",
     ]
-    df: pd.DataFrame = pd.read_excel(str(path_to_file), usecols=df_columns, engine="openpyxl")
+    df = pd.read_excel(path_to_file, usecols=df_columns, engine="openpyxl")
     logger.info("Успешная загрузка данных")
     df.columns = ["date", "status", "amount", "currency", "category"]
     df["date"] = pd.to_datetime(df["date"], dayfirst=True).dt.date
-    df = df.drop (df[(df["status"] == "FAILED") | (df["currency"] != "RUB")].index)
-    df = df.drop(columns=['status', 'currency'])
+    df = df.drop(df[(df["status"] == "FAILED") | (df["currency"] != "RUB")].index)
+    df = df.drop(columns=["status", "currency"])
     logger.info("DataFrame сформирован")
     return df
 
 
-def get_period(date: str, period: str = "M") -> Any:
+def get_period(date: str, period: str = "M") -> pd.DataFrame:
+    """
+    Формирует временной диапазон в зависимости от переданной даты и периода для последующей работы.
+    :param date: Входящее значение - дата, строка.
+    :param period: Входящее значение - период, строка.
+    :return: Результат работы функции, dataframe.
+    """
     end_date = datetime.strptime(date, "%d.%m.%Y").date()
     logger.info("Формирование периода для работы с DataFrame")
     match period.upper():
-        case 'M':
+        case "M":
             start_date_replace = re.sub(r"^\d\d", "01", date)
             start_date = datetime.strptime(start_date_replace, "%d.%m.%Y").date()
             logger.info(f"Сформирован период - Месяц(M): {start_date} : {end_date}")
@@ -53,11 +64,11 @@ def get_period(date: str, period: str = "M") -> Any:
             day_of_week = end_date.weekday()
             start_date = end_date - timedelta(days=day_of_week)
             logger.info(f"Сформирован период - Неделя(W): {start_date} : {end_date}")
-        case 'Y':
+        case "Y":
             start_date_replace = re.sub(r"^\d\d.\d\d", "01.01", date)
             start_date = datetime.strptime(start_date_replace, "%d.%m.%Y").date()
             logger.info(f"Сформирован период - Год(Y): {start_date} : {end_date}")
-        case 'D':
+        case "D":
             start_date = end_date
             logger.info(f"Сформирован период - День(D): {start_date}")
         case _:
@@ -68,8 +79,12 @@ def get_period(date: str, period: str = "M") -> Any:
     return df
 
 
-
 def get_expenses(data_frame: pd.DataFrame) -> dict:
+    """
+    Производит подсчет расходов в соответствии с заданными критериями.
+    :param data_frame: Входящее значение - dataframe.
+    :return: Результат работы функции, словарь.
+    """
     logger.info("Начало работы функции по подсчету расходов за выбранный период")
     expenses_df = data_frame[data_frame["amount"] < 0]
     expenses_general = {}
@@ -101,6 +116,11 @@ def get_expenses(data_frame: pd.DataFrame) -> dict:
 
 
 def get_income(data_frame: pd.DataFrame) -> dict:
+    """
+    Производит подсчет доходов в соответствии с заданными критериями.
+    :param data_frame: Входящее значение - dataframe.
+    :return: Результат работы функции, словарь.
+    """
     logger.info("Начало работы функции по подсчету доходов за выбранный период")
     income_df = data_frame[data_frame["amount"] > 0]
     income_general = {}
@@ -113,7 +133,11 @@ def get_income(data_frame: pd.DataFrame) -> dict:
     return income
 
 
-def get_currency_rates() -> list|str:
+def get_currency_rates() -> list | str:
+    """
+    Получает данные о курсах валют.
+    :return: Результат работы функции, список.
+    """
     logger.info("Начало работы функции по получению курсов валют")
     with open(settings, "r", encoding="utf-8") as file:
         currency_list = json.load(file)["user_currencies"]
@@ -136,6 +160,10 @@ def get_currency_rates() -> list|str:
 
 
 def get_stock_rates() -> list:
+    """
+    Получает данные о стоимости акций.
+    :return: Результат работы функции, список.
+    """
     logger.info("Начало работы функции по получению данных о котировках акций")
     with open(settings, "r", encoding="utf-8") as file:
         ticker_list = json.load(file)["user_stocks"]
@@ -148,8 +176,3 @@ def get_stock_rates() -> list:
 
 
 df_formed = form_data_frame(path)
-df_got_date = get_period("12.03.2020", "asd")
-get_expenses(df_got_date)
-get_income(df_got_date)
-get_currency_rates()
-get_stock_rates()
