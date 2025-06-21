@@ -1,0 +1,40 @@
+2025-06-16 17:19:28,527 - src.utils - INFO - (utils.py).form_data_frame(61) - Успешная загрузка данных
+2025-06-16 17:19:28,531 - src.utils - INFO - (utils.py).form_data_frame(66) - DataFrame сформирован
+2025-06-16 17:19:29,228 - src.utils - INFO - (utils.py).form_data_frame(61) - Успешная загрузка данных
+2025-06-16 17:19:29,236 - src.utils - INFO - (utils.py).form_data_frame(66) - DataFrame сформирован
+2025-06-16 17:19:29,236 - src.utils - INFO - (utils.py).get_period(76) - Формирование периода для работы с DataFrame
+2025-06-16 17:19:29,236 - src.utils - INFO - (utils.py).get_period(94) - Сформирован период - За всё время: 2018-01-01 : 2020-03-12
+2025-06-16 17:19:29,236 - src.utils - INFO - (utils.py).get_expenses(103) - Начало работы функции по подсчету расходов за выбранный период
+2025-06-16 17:19:29,238 - src.utils - INFO - (utils.py).get_expenses(109) - Сводная таблица расходов успешно сформирована
+2025-06-16 17:19:29,238 - src.utils - INFO - (utils.py).get_expenses(129) - Успешное выполнение функции и формирование корректного JSON-ответа
+2025-06-16 17:19:29,238 - src.utils - INFO - (utils.py).get_income(134) - Начало работы функции по подсчету доходов за выбранный период
+2025-06-16 17:19:29,239 - src.utils - INFO - (utils.py).get_income(138) - Сводная таблица доходов успешно сформирована
+2025-06-16 17:19:29,239 - src.utils - INFO - (utils.py).get_income(142) - Успешное выполнение функции и формирование корректного JSON-ответа
+2025-06-16 17:19:29,239 - src.utils - INFO - (utils.py).get_currency_rates(147) - Начало работы функции по получению курсов валют
+2025-06-16 17:19:41,397 - src.utils - ERROR - (utils.py).get_currency_rates(159) - Ошибка обращения к api 401 Client Error: Unauthorized for url: https://api.apilayer.com/exchangerates_data/convert?amount=1&to=RUB&from=USD
+2025-06-16 17:19:41,407 - src.utils - INFO - (utils.py).form_data_frame(61) - Успешная загрузка данных
+2025-06-16 17:19:41,408 - src.utils - INFO - (utils.py).form_data_frame(66) - DataFrame сформирован
+2025-06-16 17:19:41,413 - src.utils - INFO - (utils.py).get_period(76) - Формирование периода для работы с DataFrame
+2025-06-16 17:19:41,413 - src.utils - INFO - (utils.py).get_period(89) - Сформирован период - Год(Y): 2021-01-01 : 2021-12-31
+2025-06-16 17:19:41,416 - src.utils - INFO - (utils.py).get_period(76) - Формирование периода для работы с DataFrame
+2025-06-16 17:19:41,416 - src.utils - INFO - (utils.py).get_period(85) - Сформирован период - Неделя(W): 2021-12-27 : 2021-12-31
+2025-06-16 17:19:41,419 - src.utils - INFO - (utils.py).get_period(76) - Формирование периода для работы с DataFrame
+2025-06-16 17:19:41,419 - src.utils - INFO - (utils.py).get_period(92) - Сформирован период - День(D): 2021-12-31
+2025-06-16 17:19:41,422 - src.utils - INFO - (utils.py).get_period(76) - Формирование периода для работы с DataFrame
+2025-06-16 17:19:41,422 - src.utils - INFO - (utils.py).get_period(81) - Сформирован период - Месяц(M): 2021-12-01 : 2021-12-31
+2025-06-16 17:19:41,425 - src.utils - INFO - (utils.py).get_period(76) - Формирование периода для работы с DataFrame
+2025-06-16 17:19:41,426 - src.utils - INFO - (utils.py).get_period(94) - Сформирован период - За всё время: 2018-01-01 : 2021-12-31
+2025-06-16 17:19:41,428 - src.utils - INFO - (utils.py).get_period(76) - Формирование периода для работы с DataFrame
+2025-06-16 17:19:41,428 - src.utils - INFO - (utils.py).get_period(81) - Сформирован период - Месяц(M): 2035-12-01 : 2035-12-31
+2025-06-16 17:19:41,437 - src.utils - INFO - (utils.py).form_data_frame(61) - Успешная загрузка данных
+2025-06-16 17:19:41,439 - src.utils - INFO - (utils.py).form_data_frame(66) - DataFrame сформирован
+2025-06-16 17:19:41,439 - src.utils - INFO - (utils.py).get_expenses(103) - Начало работы функции по подсчету расходов за выбранный период
+2025-06-16 17:19:41,440 - src.utils - INFO - (utils.py).get_expenses(109) - Сводная таблица расходов успешно сформирована
+2025-06-16 17:19:41,440 - src.utils - INFO - (utils.py).get_expenses(129) - Успешное выполнение функции и формирование корректного JSON-ответа
+2025-06-16 17:19:41,449 - src.utils - INFO - (utils.py).form_data_frame(61) - Успешная загрузка данных
+2025-06-16 17:19:41,451 - src.utils - INFO - (utils.py).form_data_frame(66) - DataFrame сформирован
+2025-06-16 17:19:41,451 - src.utils - INFO - (utils.py).get_income(134) - Начало работы функции по подсчету доходов за выбранный период
+2025-06-16 17:19:41,452 - src.utils - INFO - (utils.py).get_income(138) - Сводная таблица доходов успешно сформирована
+2025-06-16 17:19:41,452 - src.utils - INFO - (utils.py).get_income(142) - Успешное выполнение функции и формирование корректного JSON-ответа
+2025-06-16 17:19:41,454 - src.utils - INFO - (utils.py).get_currency_rates(147) - Начало работы функции по получению курсов валют
+2025-06-16 17:19:41,454 - src.utils - ERROR - (utils.py).get_currency_rates(159) - Ошибка обращения к api 

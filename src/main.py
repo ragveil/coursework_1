@@ -1,16 +1,11 @@
-# This is a sample Python script.
+from src.reports import data_frame, spending_by_category, spending_by_weekday, spending_by_workday
+from src.services import list_of_transactions, search_item, search_personal_transactions, search_telephone_numbers
+from src.views import get_events_json
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+print(get_events_json("21.03.2020", "Y"), end="\n_________________\n")
+print(search_item(list_of_transactions, "Супермаркеты"), end="\n_________________\n")
+print(search_telephone_numbers(list_of_transactions), end="\n_________________\n")
+print(search_personal_transactions(list_of_transactions), end="\n_________________\n")
+print(spending_by_category(data_frame, "Супермаркеты", "08.05.2019"), end="\n_________________\n")
+print(spending_by_weekday(data_frame, "21.03.2020"), end="\n_________________\n")
+print(spending_by_workday(data_frame, "21.03.2020"))
